@@ -104,6 +104,20 @@ func uniqMetrics(metrics map[string]map[string][]string) map[string]map[string][
 	return uniq
 }
 
+func summariseOneMetric(labels map[string][]string) {
+	fmt.Printf("%d (", len(labels))
+	first := true
+	for _, label_values := range labels {
+		delimiter := ","
+		if first {
+			delimiter = ""
+			first = false
+		}
+		fmt.Printf("%s%d", delimiter, len(label_values))
+	}
+	fmt.Printf(")\n")
+}
+
 func main() {
 	metric_name := flag.String("m", "", "Metric name")
 	list_metrics := flag.Bool("n", false, "List Metric names")
@@ -124,7 +138,9 @@ func main() {
 			continue
 		}
 
-		fmt.Printf("%s\n", name)
+		fmt.Printf("%s ", name)
+		summariseOneMetric(labels)
+
 		if list_metrics != nil && *list_metrics {
 			continue
 		}
