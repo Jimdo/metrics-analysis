@@ -34,6 +34,7 @@ func readPods(reader *bufio.Reader, output chan string) error {
 	for {
 		line, err := reader.ReadString('\n')
 		if err != nil {
+			output <- buffer
 			return err
 		}
 		if strings.HasPrefix(line, "# POD") {
