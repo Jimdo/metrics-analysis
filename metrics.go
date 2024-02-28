@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bufio"
+	"bytes"
 	"flag"
 	"fmt"
 	"log"
@@ -27,27 +27,30 @@ func parseMF(pod string) (map[string]*dto.MetricFamily, error) {
 	return mf, nil
 }
 
-func readPods(reader *bufio.Reader, output chan string) error {
-	defer close(output)
-	first := true
-	var buffer string
-	for {
-		line, err := reader.ReadString('\n')
-		if err != nil {
-			output <- buffer
-			return err
-		}
-		if strings.HasPrefix(line, "# POD") {
-			if first {
-				first = false
-			} else {
-				output <- buffer
-				buffer = ""
-			}
+func next(buf *[]byte, n int) []byte {
+	ret := (*buf)[:n]
+	(*buf) = (*buf)[n:]
+	return ret
+}
 
+func readPods(file *string, output chan string) error {
+	defer close(output)
+	buf, _ := os.ReadFile(*file)
+	for {
+		needle := []byte("\n#\n# POD")
+		split := bytes.Index(buf, needle)
+
+		if split == -1 {
+			break
 		}
-		buffer = buffer + line
+
+		split = split + 1 // we want to start with the '#'
+		output <- string(next(&buf, split))
 	}
+
+	// no more needle then its the last
+	output <- string(buf)
+	return nil
 }
 
 func readMetrics(pods chan string) map[string]map[string][]string {
@@ -121,16 +124,14 @@ func summariseOneMetric(labels map[string][]string) {
 func main() {
 	metric_name := flag.String("m", "", "Metric name")
 	list_metrics := flag.Bool("n", false, "List Metric names")
+	file := flag.String("f", "", "Read from file")
 	flag.Parse()
 
 	pods := make(chan string)
 
-	reader := bufio.NewReader(os.Stdin)
-
-	go readPods(reader, pods)
+	go readPods(file, pods)
 
 	metrics := readMetrics(pods)
-
 	metrics = uniqMetrics(metrics)
 
 	for name, labels := range metrics {
