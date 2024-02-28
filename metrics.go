@@ -124,6 +124,8 @@ func summariseOneMetric(labels map[string][]string) {
 func main() {
 	metric_name := flag.String("m", "", "Metric name")
 	list_metrics := flag.Bool("n", false, "List Metric names")
+	list_labels := flag.Bool("l", false, "List Label names")
+	select_label := flag.String("sl", "", "Filter for label name")
 	file := flag.String("f", "", "Read from file")
 	flag.Parse()
 
@@ -146,7 +148,15 @@ func main() {
 			continue
 		}
 		for label_name, label_values := range labels {
-			fmt.Printf("  %s:\n", label_name)
+			if select_label != nil && *select_label != "" {
+				if label_name != *select_label {
+					continue
+				}
+			}
+			fmt.Printf("  %s: %d\n", label_name, len(label_values))
+			if list_labels != nil && *list_labels {
+				continue
+			}
 			for _, label_value := range label_values {
 				fmt.Printf("    %s\n", label_value)
 			}
