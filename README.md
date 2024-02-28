@@ -4,6 +4,14 @@ This tool can be used to analyze Prometheus metrics endpoints for high cardinali
 
 ## Usage
 
+### Get a sample of all metrics data from the current cluster and namespace
+
+This will store the metrics outputs in the directory `metrics-<current-context>`
+
+```
+./get-all-pods-metrics.sh
+```
+
 ### List of Metrics (with summary)
 
 ```
