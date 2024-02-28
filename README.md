@@ -12,6 +12,9 @@ This will store the metrics outputs in the directory `metrics-<current-context>`
 ./get-all-pods-metrics.sh
 ```
 
+You can use the `skip_until_prefix` variable to skip reading already read
+metrics in case of an error (e.g. a pod disappears while reading)
+
 ### List of Metrics (with summary)
 
 ```
