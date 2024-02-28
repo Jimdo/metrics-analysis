@@ -15,7 +15,7 @@ This will store the metrics outputs in the directory `metrics-<current-context>`
 ### List of Metrics (with summary)
 
 ```
-linkerd diagnostics proxy-metrics deploy/<service> | go run metrics.go -n
+go run metrics.go -f metrics-.../podname.metrics -n
 ```
 
 Output format: `<name> <label_count> (value_count, ...)`
@@ -23,11 +23,11 @@ Output format: `<name> <label_count> (value_count, ...)`
 ### Show specific metric
 
 ```
-linkerd diagnostics proxy-metrics deploy/<service> | go run metrics.go -m response_latency_ms
+go run metrics.go -f metrics-.../podname.metrics -m response_latency_ms
 ```
 
 ### Summarize everything
 
 ```
-linkerd diagnostics proxy-metrics deploy/<service> | go run metrics.go
+go run metrics.go -f metrics-.../podname.metrics
 ```
