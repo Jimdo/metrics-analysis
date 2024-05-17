@@ -1,6 +1,6 @@
 # Metrics Analysis
 
-This tool can be used to analyze Prometheus metrics endpoints for high cardinality.
+This tool can be used to analyze Prometheus metrics endpoints for high cardinality. If you want to contribute your own changes please take a look at the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 ## Usage
 
