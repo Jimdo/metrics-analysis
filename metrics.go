@@ -121,12 +121,33 @@ func summariseOneMetric(labels map[string][]string) {
 	fmt.Printf(")\n")
 }
 
+func outputLabelValues(metrics map[string]map[string][]string, labelNeedle string) {
+
+	values := map[string]bool{}
+	for _, labels := range metrics {
+		for labelName, labelValues := range labels {
+			if labelName != labelNeedle {
+				continue
+			}
+			for _, labelValue := range labelValues {
+				values[labelValue] = true
+			}
+		}
+	}
+
+	for value, _ := range values {
+		fmt.Println(value)
+	}
+}
+
 func main() {
 	metric_name := flag.String("m", "", "Metric name")
 	list_metrics := flag.Bool("n", false, "List Metric names")
 	list_labels := flag.Bool("l", false, "List Label names")
 	select_label := flag.String("sl", "", "Filter for label name")
+	all_label_values := flag.String("lv", "", "Get all label values for given label")
 	file := flag.String("f", "", "Read from file")
+
 	flag.Parse()
 
 	pods := make(chan string)
@@ -135,6 +156,11 @@ func main() {
 
 	metrics := readMetrics(pods)
 	metrics = uniqMetrics(metrics)
+
+	if all_label_values != nil && *all_label_values != "" {
+		outputLabelValues(metrics, *all_label_values)
+		return
+	}
 
 	for name, labels := range metrics {
 		if *metric_name != "" && *metric_name != name {
