@@ -147,8 +147,15 @@ func main() {
 	select_label := flag.String("sl", "", "Filter for label name")
 	all_label_values := flag.String("lv", "", "Get all label values for given label")
 	file := flag.String("f", "", "Read from file")
+	help := flag.Bool("h", false, "Print help")
 
 	flag.Parse()
+
+	if *file == "" || *help {
+		fmt.Fprintf(os.Stderr, "Usage: %s -f <file> [-m <metric_name>] [-n] [-l] [-sl <label_name>] [-lv <label_name>]\n", os.Args[0])
+		flag.PrintDefaults()
+		os.Exit(1)
+	}
 
 	pods := make(chan string)
 
